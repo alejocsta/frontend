@@ -1,0 +1,13 @@
+---
+import BoxMenu from '../components/BoxMenu.astro';
+import '../styles/tailwind.css';
+import Layout from './layout.astro';
+
+const pageTitle = "Catalogo"; // Título dinámico para la página
+---
+<meta charset="UTF-8">
+<div class="flex h-fit w-full bg-black">
+    <Layout pageTitle={pageTitle}>
+      <BoxMenu />
+    </Layout>
+</div>

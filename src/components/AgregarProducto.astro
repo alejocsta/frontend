@@ -1,0 +1,183 @@
+<style>
+  /* Estilos personalizados */
+  .-z-1 {
+    z-index: -1;
+  }
+
+  .origin-0 {
+    transform-origin: 0%;
+  }
+
+  input:focus ~ label,
+  input:not(:placeholder-shown) ~ label,
+  textarea:focus ~ label,
+  textarea:not(:placeholder-shown) ~ label,
+  select:focus ~ label,
+  select:not([value=""]):valid ~ label {
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    transform: translateX(var(--tw-translate-x))
+      translateY(var(--tw-translate-y)) rotate(var(--tw-rotate))
+      skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
+      scaleY(var(--tw-scale-y));
+    --tw-scale-x: 0.75;
+    --tw-scale-y: 0.75;
+    --tw-translate-y: -1.5rem;
+  }
+
+  input:focus ~ label,
+  select:focus ~ label {
+    --tw-text-opacity: 10;
+    color: rgba(255, 255, 255, var(--tw-text-opacity));
+    left: 0px;
+  }
+</style>
+
+<div id="formulario-ingredientes" class="hidden flex w-full h-full text-white m-12 justify-between bg-zinc-900 shadow-2xl p-10 rounded-xl">
+  <!-- Formulario de ingreso de producto -->
+  <div class="w-1/2">
+    <form id="form" novalidate>
+      <!-- Nombre del producto -->
+      <div class="relative z-0 w-full mb-5">
+        <input
+          type="text"
+          id="product-name"
+          name="name"
+          placeholder=" "
+          required
+          autocomplete="off"
+          maxlength="26"
+          class="pt-3 pb-2 block w-full h-13 px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+        />
+        <label
+          for="product-name"
+          class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500"
+          >* Nombre del producto</label
+        >
+        <span class="text-sm text-red-600 hidden" id="error-name">Es requerido el nombre.</span>
+      </div>
+
+      <!-- Descripción del producto -->
+      <div class="relative z-0 w-full mb-5">
+        <textarea
+          id="product-description"
+          name="description"
+          placeholder=" "
+          required
+          autocomplete="off"
+          maxlength="120"
+          class="pt-3 pb-3 block w-full h-max px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+        ></textarea>
+        <label
+          for="product-description"
+          class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500"
+          >* Breve Descripción del producto</label
+        >
+        <span class="text-sm text-red-600 hidden" id="error-description">Es requerida la descripción.</span>
+      </div>
+
+      <!-- Peso del producto -->
+      <div class="relative z-0 w-full mb-5">
+        <input
+          type="number"
+          id="product-weight"
+          name="weight"
+          placeholder=" "
+          required
+          autocomplete="off"
+          step="0.01"
+          class="pt-3 pb-2 block w-full h-13 px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+        />
+        <label
+          for="product-weight"
+          class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500"
+          >* Peso del producto (en gramos)</label
+        >
+        <span class="text-sm text-red-600 hidden" id="error-weight">Es requerido el peso.</span>
+      </div>
+
+      <!-- Precio del producto -->
+      <div class="relative z-0 w-full mb-5">
+        <input
+          type="number"
+          id="product-price"
+          name="price"
+          placeholder=" "
+          required
+          autocomplete="off"
+          step="0.01"
+          class="pt-3 pb-2 block w-full h-13 px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+        />
+        <label
+          for="product-price"
+          class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500"
+          >* Precio del producto</label
+        >
+        <span class="text-sm text-red-600 hidden" id="error-price">Es requerido el precio.</span>
+      </div>
+
+      <!-- Botón Enviar -->
+      <button
+        id="button-product"
+        type="submit"
+        class="w-full px-6 py-3 mt-3 text-lg text-white transition-all duration-150 ease-linear rounded-lg shadow outline-none bg-red-500 hover:bg-red-600 hover:shadow-lg focus:outline-none"
+      >
+        Enviar
+      </button>
+    </form>
+    <button id="boton-close-form-ingredientes" class="fa-solid fa-x absolute end-3 mr-10 -mt-14 w-8 h-8 bg-red-800 text-white rounded-full hover:scale-105 ease-in duration-300"></button>
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('form') as HTMLFormElement | null;
+    const closeButton = document.getElementById('boton-close-form-ingredientes') as HTMLButtonElement | null;
+    const formulario = document.getElementById('formulario-ingredientes') as HTMLDivElement | null;
+
+    if (form && closeButton && formulario) {
+      // Evento para enviar el formulario
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevenir el comportamiento por defecto
+
+        const formData = new FormData(form);
+        const productData = Object.fromEntries(formData.entries());
+
+        try {
+          const response = await fetch('http://127.0.0.1:8080/products', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: productData.name,
+              description: productData.description,
+              weight: parseFloat(productData.weight), // Convertir a número
+              price: parseFloat(productData.price), // Convertir a número
+            }),
+          });
+
+          if (response.ok) {
+            console.log('Producto agregado con éxito.');
+            form.reset(); // Limpiar el formulario
+            formulario.classList.add('hidden'); // Ocultar el formulario
+            window.location.reload();
+          } else {
+            console.error('Error al agregar producto:', response.status);
+          }
+        } catch (error) {
+          console.error('Error al enviar el formulario:', error);
+        }
+      });
+
+      // Evento para cerrar el formulario
+      closeButton.addEventListener('click', () => {
+        formulario.classList.add('hidden');
+      });
+    }
+  });
+</script>

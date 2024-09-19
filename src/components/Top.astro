@@ -1,0 +1,68 @@
+---
+const { pageTitle } = Astro.props;
+
+import BoxMenu from '../components/BoxMenu.astro';
+import "../styles/global.css";
+import '@fortawesome/fontawesome-free/css/all.css';
+import Search from './Search.astro';
+
+let showModal = false;
+
+function toggleModal(): void {
+  showModal = !showModal;
+}
+
+const currentPath = Astro.url.pathname;
+let showButton = false;
+
+if (currentPath.includes('/catalogo') || currentPath.includes('/productos')) {
+    showButton = true;
+}
+---
+
+<div class="w-full table-column">
+    <Search />
+    <div class="w-7/8 h-24 m-5 bg-zinc-900 rounded-t-xl flex items-center justify-between p-5">
+        <span class="text-white font-LemonMedium text-3xl">{pageTitle}</span>
+        {showButton && (
+             <button id="boton-form" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Agregar</button>
+        )}
+    </div>
+    <BoxMenu />
+</div>
+
+<script>
+    const currentPath = window.location.pathname;
+    // Función genérica para abrir y cerrar formularios
+    function toggleForm(closeButtonId: string, formId: string): void {
+        // Referencias a los botones y al formulario
+        const openFormButton = document.getElementById("boton-form") as HTMLButtonElement | null;
+        const closeFormButton = document.getElementById(closeButtonId) as HTMLButtonElement | null;
+        const form = document.getElementById(formId) as HTMLDivElement | null;
+    
+        // Verificamos que los elementos existen antes de agregar los listeners
+        if (openFormButton && form) {
+            // Evento para abrir el formulario
+            openFormButton.addEventListener('click', () => {
+                form.classList.remove('hidden');
+                console.log("Formulario abierto");
+                openFormButton.classList.add('hidden'); // Ocultar el botón de abrir si es necesario
+            });
+        }
+    
+        // Evento para cerrar el formulario
+        if (closeFormButton && form) {
+            closeFormButton.addEventListener('click', () => {
+                form.classList.add('hidden');
+                openFormButton?.classList.remove('hidden'); // Mostrar el botón de abrir si fue ocultado
+            });
+        }
+    }
+    
+    // Usar el currentPath ya definido arriba
+    if (currentPath.includes('/catalogo')) {
+        toggleForm('boton-close-form-menu', 'formulario-menu');
+    } else if (currentPath.includes('/productos')) {
+        toggleForm('boton-close-form-ingredientes', 'formulario-ingredientes');
+    }
+</script>

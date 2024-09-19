@@ -1,0 +1,179 @@
+
+<style>
+  /* Estilos personalizados */
+  .-z-1 {
+    z-index: -1;
+  }
+
+  .origin-0 {
+    transform-origin: 0%;
+  }
+
+  input:focus ~ label,
+  input:not(:placeholder-shown) ~ label,
+  textarea:focus ~ label,
+  textarea:not(:placeholder-shown) ~ label,
+  select:focus ~ label,
+  select:not([value=""]):valid ~ label {
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    transform: translateX(var(--tw-translate-x))
+      translateY(var(--tw-translate-y)) rotate(var(--tw-rotate))
+      skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
+      scaleY(var(--tw-scale-y));
+    --tw-scale-x: 0.75;
+    --tw-scale-y: 0.75;
+    --tw-translate-y: -1.5rem;
+  }
+
+  input:focus ~ label,
+  select:focus ~ label {
+    --tw-text-opacity: 10;
+    color: rgba(255, 255, 255, var(--tw-text-opacity));
+    left: 0px;
+  }
+</style>
+
+<div id="formulario-menu" class="hidden flex w-full h-full text-white m-12 justify-between bg-zinc-900 shadow-2xl shadow-gray-800 p-10 rounded-xl">
+  <!-- Formulario de ingreso de menú -->
+  <div class="w-1/2">
+    <form id="form" novalidate>
+      <!-- Nombre del menú -->
+      <div class="relative z-0 w-full mb-5">
+        <input
+          type="text"
+          id="menu-name"
+          name="name"
+          placeholder=" "
+          required
+          autocomplete="off"
+          maxlength="26"
+          class="pt-3 pb-2 block w-full h-13 px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+        />
+        <label
+          for="name"
+          class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500"
+          >* Nombre de la comida</label
+        >
+        <span class="text-sm text-red-600 hidden" id="error"
+          >Es requerido el nombre.</span
+        >
+      </div>
+
+      <!-- Descripción del menú -->
+      <div class="relative z-0 w-full mb-5">
+        <textarea
+          id="menu-description"
+          name="description"
+          placeholder=" "
+          required
+          autocomplete="off"
+          maxlength="120"
+          class="pt-3 pb-3 block w-full h-max px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+        ></textarea>
+        <label
+          for="description"
+          class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500"
+          >* Breve Descripcion del menu</label
+        >
+        <span class="text-sm text-red-600 hidden" id="error"
+          >Es requerida la descripción</span
+        >
+      </div>
+
+      <div class="relative w-full">
+        <i class="fa-solid fa-magnifying-glass text-red-900 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+        <input type="search" class="bg-zinc-900 text-white shadow rounded border-0 pl-10 pr-3 py-3 rounded-full w-full" placeholder="Buscar Producto...">
+        <ul id="resultados-productos" class="absolute bg-zinc-900 text-white w-full max-h-40 overflow-auto mt-2"></ul>
+      </div>      
+
+      <!-- Imagen del menú -->
+      <div class="relative z-0 w-full mb-5 pt-8">
+        <input
+          type="file"
+          id="menu-image"
+          name="image"
+          class="block hover:scale-105 ease-in duration-300 w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-red-700 hover:file:bg-pink-100"
+        />
+        <label
+          for="image"
+          class="absolute duration-300 top-6 -z-1 origin-0 text-gray-500"
+          >Sube una imagen</label
+        >
+        <span class="text-sm text-red-600 hidden" id="error"
+          >Es requerida una imagen</span
+        >
+      </div>
+
+      <!-- Botón Enviar -->
+      <button
+        id="button"
+        type="submit"
+        class="w-full px-6 py-3 mt-3 text-lg text-white transition-all duration-150 ease-linear rounded-lg shadow outline-none bg-red-500 hover:bg-red-600 hover:shadow-lg focus:outline-none"
+      >
+        Enviar
+      </button>
+    </form>
+  </div>
+
+  <!-- Vista previa del menú -->
+  <div class="w-1/2 px-5 mt-5 ml-10">
+    <div class="max-w-sm text-white overflow-hidden text-white bg-zinc-800 flex flex-col p-4 hover:scale-105 ease-in duration-300 relative">
+      <img id="preview-image" src="https://via.placeholder.com/150" class="w-full h-48 object-cover rounded-lg mb-4" alt="Menu Preview" />
+      <div class="flex justify-between items-center w-full mt-4">
+        <h3 id="preview-name" class="text-lg font-bold">Titulo del Menu</h3>
+        <p  id="preview-price" class="w-max p-1 h-8 bg-pink-500 rounded-lg flex items-center justify-center">$0</p>
+      </div>
+      <p id="preview-description" class="text-gray-400">Breve descripcion...</p>
+    </div>
+  </div>
+  <button id="boton-close-form-menu" class="fa-solid fa-x absolute end-3 mr-10 -mt-14 w-8 h-8 bg-red-800 text-white rounded-full hover:scale-105 ease-in duration-300"></button>
+</div>
+
+
+<script>
+  // Al cargar el DOM
+document.addEventListener('DOMContentLoaded', () => {
+  const nameInput = document.getElementById('menu-name') as HTMLInputElement;
+  const descriptionInput = document.getElementById('menu-description') as HTMLTextAreaElement;
+  const imageInput = document.getElementById('menu-image') as HTMLInputElement;
+
+  // Actualiza la vista previa cuando el nombre o la descripción cambien
+  nameInput.addEventListener('input', updatePreview);
+  descriptionInput.addEventListener('input', updatePreview);
+
+  // Actualiza la imagen cuando el archivo cambie
+  imageInput.addEventListener('change', updateImagePreview);
+});
+
+function updatePreview(): void {
+  const name = (document.getElementById('menu-name') as HTMLInputElement).value;
+  const description = (document.getElementById('menu-description') as HTMLTextAreaElement).value;
+
+  const previewName = document.getElementById('preview-name') as HTMLElement;
+  const previewDescription = document.getElementById('preview-description') as HTMLElement;
+
+  previewName.textContent = name || "Nombre del Menú";
+  previewDescription.textContent = description || "Breve descripción del menú...";
+}
+
+function updateImagePreview(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const file = input.files ? input.files[0] : null;
+  const reader = new FileReader();
+
+  reader.onload = function(e: ProgressEvent<FileReader>) {
+    const previewImage = document.getElementById('preview-image') as HTMLImageElement;
+    if (e.target && e.target.result) {
+      previewImage.src = e.target.result as string;
+    }
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+}
+</script>

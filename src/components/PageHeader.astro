@@ -1,0 +1,14 @@
+---
+export interface Props {
+  pageName: string;
+}
+
+const { pageName } = Astro.props;
+---
+
+<div class="w-full table-column">
+    <div class="w-7/8 h-24 bg-zinc-100 m-5 rounded-md flex items-center">
+        <span class="text-gray-800 font-LemonMedium p-5 text-3xl">{pageName}</span>
+        <button class="w-4 h-24 bg-zinc-100 flex m-5"></button>
+    </div>
+</div>

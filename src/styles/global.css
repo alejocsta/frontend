@@ -1,3 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@font-face {
+    font-family: 'LEMONMILK-Medium'; 
+    src: url('/fonts/LEMONMILK-Medium.otf') format('opentype'); 
+    font-weight: normal;
+    font-style: normal;
+}
